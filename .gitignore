@@ -1,0 +1,15 @@
+# UTILITY FILES
+*.bat
+
+# BUILD
+build/
+
+# IDE FILES
+.vscode/
+.vs/
+
+# TEMP FILES
+imgui.ini
+
+# ENGINE FILES
+Oasis/

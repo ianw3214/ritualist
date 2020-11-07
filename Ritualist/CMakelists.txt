@@ -1,0 +1,4 @@
+target_sources(Ritualist PRIVATE config.cpp)
+
+target_sources(Ritualist PRIVATE Ritualist.hpp)
+target_sources(Ritualist PRIVATE Ritualist.cpp)
