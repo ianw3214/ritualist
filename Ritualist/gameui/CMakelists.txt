@@ -1,0 +1,2 @@
+target_sources(Ritualist PRIVATE gameui.hpp)
+target_sources(Ritualist PRIVATE gameui.cpp)

@@ -1,0 +1,3 @@
+target_sources(Ritualist PRIVATE input.hpp)
+
+target_sources(Ritualist PRIVATE input.cpp)

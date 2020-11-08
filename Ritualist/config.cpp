@@ -13,7 +13,7 @@ Oasis::Configuration Oasis::GetConfiguration()
     // Return the initial state as a callback so it doesn't get instantiated before engine inits
     config.m_initState = []() -> IState* 
     {
-        return new Ritualist();
+        return new Game();
     };
 
     return config;

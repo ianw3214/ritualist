@@ -13,3 +13,6 @@ imgui.ini
 
 # ENGINE FILES
 Oasis/
+
+# PHOTOSHOP FILES
+*.psd

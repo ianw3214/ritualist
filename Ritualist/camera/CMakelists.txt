@@ -1,0 +1,1 @@
+target_sources(Ritualist PRIVATE camera.hpp camera.cpp)
