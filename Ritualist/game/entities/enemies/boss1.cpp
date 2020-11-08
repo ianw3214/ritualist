@@ -1,8 +1,8 @@
 #include "boss1.hpp"
 
-#include "camera/camera.hpp"
-#include "game.hpp"
-#include "entities/player.hpp"
+#include "game/camera/camera.hpp"
+#include "game/game.hpp"
+#include "game/entities/player.hpp"
 
 #define PI 3.14156f
 #include <random>
@@ -11,13 +11,13 @@
 std::default_random_engine generator;
 
 Boss1::Boss1()  
-    : Entity(0.f, 0.f, 200.f, 200.f, 1.f, 100.f)
+    : Entity(1200.f, 1200.f, 200.f, 200.f, 1.f, 100.f)
     , m_sprite("res/enemies/boss1.png", 200, 200)
     , m_moving(false)
     , m_targetX(0.f)
     , m_targetY(0.f)
     , m_retargetTimer(0.f)
-    , m_attackTimer(0.f)
+    , m_attackTimer(7.f)
     , m_ringTimer(0.f)
     , m_rings()
     , m_invulnTimer(0.f)

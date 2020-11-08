@@ -1,19 +1,19 @@
 #include "player.hpp"
 
-#include "camera/camera.hpp"
-#include "input/input.hpp"
+#include "game/camera/camera.hpp"
+#include "game/input/input.hpp"
 
-#include "game.hpp"
+#include "game/game.hpp"
 
-Player::Player()
-    : Entity(0.f, 0.f, 80.f, 80.f, 20.f, 20.f)
+Player::Player(float x, float y)
+    : Entity(x, y, 80.f, 80.f, 20.f, 20.f)
     , m_sprite("res/player.png", 80, 80)
     , m_attackLeftAnim("res/vfx/player_attack_left.png", 160, 80)
     , m_attackRightAnim("res/vfx/player_attack_right.png", 160, 80)
     , m_attackDownAnim("res/vfx/player_attack_down.png", 80, 160)
     , m_attackUpAnim("res/vfx/player_attack_up.png", 80, 160)
     , m_speed(300.f)
-    , m_attackCooldown(0.2f)
+    , m_attackCooldown(0.35f)
     , m_direction(Direction::RIGHT)
     , m_moving(false)
     , m_attacking(false)
@@ -21,10 +21,10 @@ Player::Player()
     , m_invulnTimer(0.f)
 {
     m_sprite.SetDimensions(80.f, 80.f);
-    m_sprite.AddAnimation("idle_left", 0, 0);
-    m_sprite.AddAnimation("idle_right", 6, 6);
-    m_sprite.AddAnimation("idle_down", 12, 12);
-    m_sprite.AddAnimation("idle_up", 18, 18);
+    m_sprite.AddAnimation("idle_left", 0, 3);
+    m_sprite.AddAnimation("idle_right", 6, 9);
+    m_sprite.AddAnimation("idle_down", 12, 15);
+    m_sprite.AddAnimation("idle_up", 18, 21);
     m_sprite.AddAnimation("run_left", 24, 29);
     m_sprite.AddAnimation("run_right", 30, 35);
     m_sprite.AddAnimation("run_down", 36, 41);
@@ -34,19 +34,24 @@ Player::Player()
     m_sprite.AddAnimation("attack_down", 60, 64);
     m_sprite.AddAnimation("attack_up", 66, 70);
     m_sprite.PlayAnimation("idle_right");
+    m_sprite.SetFPS(12);
 
     m_attackLeftAnim.SetDimensions(160.f, 80.f);
     m_attackLeftAnim.AddAnimation("attack_left", 0, 4);
     m_attackLeftAnim.PlayAnimation("");
+    m_attackLeftAnim.SetFPS(16);
     m_attackRightAnim.SetDimensions(160.f, 80.f);
     m_attackRightAnim.AddAnimation("attack_right", 0, 4);
     m_attackRightAnim.PlayAnimation("");
+    m_attackRightAnim.SetFPS(16);
     m_attackDownAnim.SetDimensions(80.f, 160.f);
     m_attackDownAnim.AddAnimation("attack_down", 0, 4);
     m_attackDownAnim.PlayAnimation("");
+    m_attackDownAnim.SetFPS(16);
     m_attackUpAnim.SetDimensions(80.f, 160.f);
     m_attackUpAnim.AddAnimation("attack_up", 0, 4);
     m_attackUpAnim.PlayAnimation("");
+    m_attackUpAnim.SetFPS(16);
 
     // Let the camera class store a reference to the player (there should only be one)
     GameService::SetPlayer(this);
@@ -74,6 +79,12 @@ void Player::Update(float delta)
 
     m_sprite.SetPos(CameraService::RawToScreenX(m_x), CameraService::RawToScreenY(m_y));
 
+    // Update player tint for when damaged
+    float tint_alpha = std::max(m_invulnTimer / m_invulnTime, 0.f);
+    tint_alpha *= tint_alpha;   // Square for a more dramatic curve
+    m_sprite.SetTint(Oasis::Colours::RED, tint_alpha);
+    m_invulnTimer -= delta;
+
     // Oasis::Renderer::DrawSprite(&m_sprite);
     Oasis::Renderer::DrawAnimatedSprite(&m_attackUpAnim);
     Oasis::Renderer::DrawAnimatedSprite(&m_sprite);
@@ -90,6 +101,7 @@ void Player::HandleAttack(float delta)
         m_attackTimer -= delta;
         if (m_attackTimer <= 0.f)
         {
+            m_sprite.SetFPS(12);
             m_attacking = false;
         }
     }
@@ -97,6 +109,7 @@ void Player::HandleAttack(float delta)
     {
         if (InputService::Attack())
         {
+            m_sprite.SetFPS(24);
             m_attacking = true;
             m_attackTimer = m_attackCooldown;
             if (m_direction == Direction::UP) 
@@ -150,25 +163,49 @@ void Player::HandleMovement(float delta)
     m_moving = false;
     if (InputService::MoveUp())
     {
-        m_y += m_speed * delta;
+        // m_y += m_speed * delta;
+        float yOffset = 0.f;
+        while(GameService::CheckMapConstriants(m_x, m_y + yOffset + 1.f) && yOffset <= m_speed * delta)
+        {
+            yOffset += 1.f;
+        }
+        m_y += yOffset;
         m_direction = Direction::UP;
         m_moving = true;
     }
     if (InputService::MoveDown())
     {
-        m_y -= m_speed * delta;
+        // m_y -= m_speed * delta;
+        float yOffset = 0.f;
+        while(GameService::CheckMapConstriants(m_x, m_y - yOffset - 1.f) && yOffset <= m_speed * delta)
+        {
+            yOffset += 1.f;
+        }
+        m_y -= yOffset;
         m_direction = Direction::DOWN;
         m_moving = true;
     }
     if (InputService::MoveLeft())
     {
-        m_x -= m_speed * delta;
+        float xOffset = 0.f;
+        while(GameService::CheckMapConstriants(m_x - xOffset - 1.f, m_y) && xOffset <= m_speed * delta)
+        {
+            xOffset += 1.f;
+        }
+        m_x -= xOffset;
+        // m_x -= m_speed * delta;
         m_direction = Direction::LEFT;
         m_moving = true;
     }
     if (InputService::MoveRight())
     {
-        m_x += m_speed * delta;
+        float xOffset = 0.f;
+        while(GameService::CheckMapConstriants(m_x + xOffset + 1.f, m_y) && xOffset <= m_speed * delta)
+        {
+            xOffset += 1.f;
+        }
+        m_x += xOffset;
+        // m_x += m_speed * delta;
         m_direction = Direction::RIGHT;
         m_moving = true;
     }

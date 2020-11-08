@@ -16,6 +16,7 @@ target_link_libraries(Oasis Opengl32.lib)
 
 target_link_libraries(Ritualist Oasis)
 target_include_directories(Ritualist PRIVATE Oasis/src)
+target_include_directories(Ritualist PRIVATE Oasis/vendor)
 target_include_directories(Ritualist PRIVATE Ritualist)
 
 set_property(TARGET Oasis PROPERTY CXX_STANDARD 17)

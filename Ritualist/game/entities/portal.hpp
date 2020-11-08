@@ -1,15 +1,16 @@
 #pragma once
 #include "oasis.h"
+
 #include "entity.hpp"
 
-class Altar : public Entity 
+class Portal : public Entity
 {
 public:
-    Altar();
+    Portal(float x = 0.f, float y = 0.f);
 
     virtual void Update(float delta) override;
 private:
     Oasis::AnimatedSprite m_sprite;
 
-    bool m_activated;
+    const float m_activateRadius = 90.f;
 };

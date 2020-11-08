@@ -1,7 +1,7 @@
 #include "oasis.h"
 #include "core/entry.hpp"
 
-#include "game.hpp"
+#include "game/game.hpp"
 
 Oasis::Configuration Oasis::GetConfiguration()
 {

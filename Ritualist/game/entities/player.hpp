@@ -14,7 +14,7 @@ enum class Direction
 class Player : public Entity
 {
 public:
-    Player();
+    Player(float x = 0.f, float y = 0.f);
 
     virtual void Update(float delta) override;
 private:

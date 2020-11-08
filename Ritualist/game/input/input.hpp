@@ -23,7 +23,7 @@ public:
     virtual void Close() override;
 
     virtual bool HandleEvent(const Oasis::Event& event) override;
-    virtual void Update()  override;
+    virtual Oasis::IState * Update()  override;
 
     // Input state
     bool m_left;

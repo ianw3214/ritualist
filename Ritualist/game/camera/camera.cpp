@@ -1,7 +1,7 @@
 #include "camera.hpp"
 
-#include "game.hpp"
-#include "entities/player.hpp"
+#include "game/game.hpp"
+#include "game/entities/player.hpp"
 
 Ref<Camera> CameraService::s_camera;
 
@@ -55,9 +55,10 @@ bool Camera::HandleEvent(const Oasis::Event& event)
     return false;
 }
 
-void Camera::Update() 
+Oasis::IState * Camera::Update() 
 {
     Ref<Player> player = GameService::GetPlayer();
     m_x = player->GetX();
     m_y = player->GetY();
+    return nullptr;
 }

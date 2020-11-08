@@ -92,7 +92,7 @@ bool Input::HandleEvent(const Oasis::Event& event)
     return false;
 }
 
-void Input::Update()
+Oasis::IState * Input::Update()
 {
-    
+    return nullptr;
 }
