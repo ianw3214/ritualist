@@ -27,6 +27,11 @@ bool InputService::Attack()
     return s_input->m_attack;
 }
 
+bool InputService::Teleport()
+{
+    return s_input->m_teleport;
+}
+
 void Input::Init()
 {
     InputService::s_input = this;
@@ -63,6 +68,10 @@ bool Input::HandleEvent(const Oasis::Event& event)
         {
             m_attack = true;
         }
+        if (key == SDL_SCANCODE_X || key == SDL_SCANCODE_PERIOD)
+        {
+            m_teleport = true;
+        }
     }
     if (event.GetType() == Oasis::EventType::KEY_RELEASED)
     {
@@ -87,6 +96,10 @@ bool Input::HandleEvent(const Oasis::Event& event)
         if (key == SDL_SCANCODE_Z || key == SDL_SCANCODE_COMMA)
         {
             m_attack = false;
+        }
+        if (key == SDL_SCANCODE_X || key == SDL_SCANCODE_PERIOD)
+        {
+            m_teleport = false;
         }
     }
     return false;

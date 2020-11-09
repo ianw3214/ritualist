@@ -1,42 +1,42 @@
-#include "death.hpp"
+#include "opening.hpp"
 
 #include "game/game.hpp"
 #include "game/progression.hpp"
 
-Death::Death()
-    : m_background("res/ui_assets/dead.png")
-    , m_deathScreenTimer(kDeathScreenTimer)
+Opening::Opening()
+    : m_background("res/opening.png")
+    , m_creditsScreenTimer(kCreditsSceneTimer)
     , m_buttonPressed(false)
 {
 
 }
 
-void Death::Init()
+void Opening::Init()
 {
     m_fadeInTimer = m_fadeInTime;
     m_fadeOutTimer = 0.f;
+
+    UIManager::HideWindow(kAltarUiName);
 }
 
-void Death::Close()
+void Opening::Close()
 {
 
 }
 
-void Death::OnEvent(const Oasis::Event& event)
+void Opening::OnEvent(const Oasis::Event& event)
 {
     if (event.GetType() == Oasis::EventType::KEY_PRESSED)
     {
-        if (m_deathScreenTimer < 0.f && !m_buttonPressed)
+        if (m_creditsScreenTimer < 0.f && !m_buttonPressed)
         {
             m_buttonPressed = true;
             m_fadeOutTimer = m_fadeOutTime;
-            Progression::ResetProgression();
-            GameService::ChangeLevel(Level::LOBBY);
         }
     }
 }
 
-Oasis::IState * Death::Update()
+Oasis::IState * Opening::Update()
 {
     float delta = Oasis::WindowService::GetDeltaF() / 1000000.f;
 
@@ -59,8 +59,8 @@ Oasis::IState * Death::Update()
             return new Game();
         }
     }
-    
-    m_deathScreenTimer -= delta;
+
+    m_creditsScreenTimer -= delta;
 
     return nullptr;
 }

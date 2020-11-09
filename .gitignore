@@ -17,3 +17,8 @@ Oasis/
 # PHOTOSHOP FILES
 *.psd
 *.aseprite
+
+# EXPORT FILES
+export/
+screenshots/
+*.zip

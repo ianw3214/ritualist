@@ -1,10 +1,12 @@
 #include "gameui.hpp"
 
-#include "game.hpp"
-#include "entities/player.hpp"
+#include "game/game.hpp"
+#include "game/progression.hpp"
+#include "game/entities/player.hpp"
 
 GameUI::GameUI()
     : m_healthUISprite("res/ui_assets/player_health_ui.png")
+    , m_bossHealthUISprite("res/ui_assets/boss_health_ui.png")
 {
     
 }
@@ -26,6 +28,10 @@ bool GameUI::HandleEvent(const Oasis::Event& event)
 
 Oasis::IState * GameUI::Update()  
 {
+    if (Progression::GameWon())
+    {
+        return nullptr;
+    }
     {   // Render the player health bar
         Ref<Player> player = GameService::GetPlayer();
         float percent = player->GetHealth() / player->GetHealthCapacity();
@@ -48,7 +54,10 @@ Oasis::IState * GameUI::Update()
             const float y = Oasis::WindowService::WindowHeight() - 35.f;
             constexpr float w = 600.f;
             constexpr float h = 15.f;
-            Oasis::Renderer::DrawQuad(x, y, w * percent, h, Oasis::Colours::RED);   
+            Oasis::Renderer::DrawQuad(x + 1.f, y + 1.f, (w - 2.f) * percent, h - 2.f, Oasis::Colours::RED);  
+            m_bossHealthUISprite.SetPos(x, y);
+            m_bossHealthUISprite.SetDimensions(w, h);
+            Oasis::Renderer::DrawSprite(&m_bossHealthUISprite); 
         }
     }
 

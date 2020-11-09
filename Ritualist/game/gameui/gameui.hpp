@@ -14,4 +14,5 @@ public:
     virtual Oasis::IState * Update()  override;
 private:
     Oasis::Sprite m_healthUISprite;
+    Oasis::Sprite m_bossHealthUISprite;
 };

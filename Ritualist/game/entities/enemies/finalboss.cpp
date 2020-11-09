@@ -1,19 +1,20 @@
-#include "boss1.hpp"
+#include "finalboss.hpp"
 
 #include "game/camera/camera.hpp"
 #include "game/game.hpp"
+#include "game/progression.hpp"
 #include "game/entities/player.hpp"
 
 #define PI 3.14156f
 #include <random>
 
 // This is super bad code but idc anymore cause life do be like that
-static std::random_device rd;
-static std::default_random_engine generator(rd());
+static std::random_device rd2;
+static std::default_random_engine generator2(rd2());
 
-Boss1::Boss1()  
-    : Entity(1200.f, 1200.f, 200.f, 200.f, 30.f, 30.f)
-    , m_sprite("res/enemies/boss1.png", 200, 200)
+FinalBoss::FinalBoss()
+    : Entity(1200.f, 1200.f, 400.f, 400.f, 50.f, 50.f)
+    , m_sprite("res/enemies/final_boss.png", 400, 400)
     , m_moving(false)
     , m_targetX(0.f)
     , m_targetY(0.f)
@@ -24,13 +25,13 @@ Boss1::Boss1()
     , m_rings()
     , m_invulnTimer(0.f)
 {
-    m_sprite.SetDimensions(200.f, 200.f);
-    m_sprite.AddAnimation("idle", 0, 3);
-    m_sprite.AddAnimation("charge", 5, 9);
-    m_sprite.AddAnimation("attack", 10, 13);
-    m_sprite.AddAnimation("die", 15, 18);
-    m_sprite.PlayAnimation("idle");
+    m_sprite.SetDimensions(400.f, 400.f);
+    m_sprite.AddAnimation("idle", 0, 0);
+    m_sprite.AddAnimation("charge", 2, 3);
+    m_sprite.AddAnimation("attack", 4, 5);
+    m_sprite.AddAnimation("die", 6, 7);
     m_sprite.SetFPS(8);
+    m_sprite.PlayAnimation("idle");
 
     GameService::AddAttackCallback([&](Target target, float dmg, float x, float y, float w, float h){
         if (target != Target::ENEMY)
@@ -47,12 +48,12 @@ Boss1::Boss1()
     });
 }
 
-void Boss1::Update(float delta)
+void FinalBoss::Update(float delta)
 {
     HandleAttack(delta);
     HandleMovement(delta);
 
-    m_sprite.SetPos(CameraService::RawToScreenX(m_x - m_w / 2.f), CameraService::RawToScreenY(m_y));
+    m_sprite.SetPos(CameraService::RawToScreenX(m_x - m_h / 2.f), CameraService::RawToScreenY(m_y));
 
     // Update boss tint for when damaged
     float tint_alpha = std::max(m_invulnTimer / m_invulnTime, 0.f);
@@ -64,17 +65,15 @@ void Boss1::Update(float delta)
     Oasis::Renderer::DrawAnimatedSprite(&m_sprite);
     for (Ring& ring : m_rings)
     {
+        
         Oasis::Renderer::DrawAnimatedSprite(ring.m_attack);
     }
 }
 
-void Boss1::HandleAttack(float delta)
+void FinalBoss::HandleAttack(float delta)
 {
     // Don't bother attacking if dead
     if (GetHealth() <= 0.0) return;
-
-    // Don't bother attacking if player dead
-    if (GameService::PlayerDead()) return;
 
     std::uniform_real_distribution<float> distribution(0.0, 1.0);
     if (m_attackTimer <= 0.f)
@@ -90,20 +89,20 @@ void Boss1::HandleAttack(float delta)
                 Ring ring{m_x, m_y, radius, centerX, centerY, angle, direction};
                 ring.m_attack = new Oasis::AnimatedSprite("res/vfx/boss1_attack.png", 160, 80);
                 ring.m_attack->SetDimensions(160.f, 80.f);
-                ring.m_attack->AddAnimation("default", 0, 4);
+                ring.m_attack->AddAnimation("default", 0, 2);
                 ring.m_attack->PlayAnimation("default");
                 m_rings.emplace_back(ring);
             };
             for (unsigned int i = 0; i < m_ringsPerAttack; ++i)
             {
                 // arbitrary numbers
-                const float radius = distribution(generator) * 150.f + 200.f;
-                const float angle = distribution(generator) * 2 * PI;
+                const float radius = distribution(generator2) * 350.f + 250.f;
+                const float angle = distribution(generator2) * 2 * PI;
                 const float centerX = m_x - std::cos(angle);
                 const float centerY = m_y - std::sin(angle);
-                const float direction = distribution(generator) >= 0.5f ? 1.f : -1.f;
+                const float direction = distribution(generator2) >= 0.5f ? 1.f : -1.f;
                 add_ring(radius, centerX, centerY, angle, direction);
-            }
+            }   
             m_sprite.PlayAnimation("attack");
         }
         else
@@ -117,7 +116,6 @@ void Boss1::HandleAttack(float delta)
     }
     m_attackTimer -= delta;
     m_ringTimer -= delta;
-    
     // Update the rings
     if (m_ringTimer >= 0.f)
     {
@@ -131,8 +129,8 @@ void Boss1::HandleAttack(float delta)
             ring.m_currentY = ring.m_centerY + yOffset;
             ring.m_attack->SetPos(CameraService::RawToScreenX(ring.m_currentX), CameraService::RawToScreenY(ring.m_currentY));
 
-            // Add an attack for each ring to actually do damage
-            GameService::AddAttack(Target::PLAYER, m_ringDamage, ring.m_currentX, ring.m_currentY, 160.f, 80.f);
+            // Add an attack for each ring to actually do damage (be a little more lenient)
+            GameService::AddAttack(Target::PLAYER, m_ringDamage, ring.m_currentX + 10.f, ring.m_currentY + 10.f, 160.f - 20.f, 80.f - 20.f);
         }
     }
     else
@@ -145,7 +143,7 @@ void Boss1::HandleAttack(float delta)
     }
 }
 
-void Boss1::HandleMovement(float delta)
+void FinalBoss::HandleMovement(float delta)
 {
     // Dont' bother moving if dead
     if (GetHealth() <= 0.0) return;
@@ -153,13 +151,12 @@ void Boss1::HandleMovement(float delta)
     std::uniform_real_distribution<float> distribution(0.0, 1.0);
 
     // Check if we need to retarget
-    // Also don't retarget if we are charging an attack
     if (m_retargetTimer <= 0.f && !m_charging)
     {
         m_sprite.PlayAnimation("idle");
         m_retargetTimer = m_retargetTime;
         // Find a random spot in a circle around the player
-        float key = distribution(generator);
+        const float key = distribution(generator2);
         const float x_offset = static_cast<float>(std::cos(2 * PI * key));
         const float y_offset = static_cast<float>(std::sin(2 * PI * key));
 
@@ -193,7 +190,7 @@ void Boss1::HandleMovement(float delta)
     }
 }
 
-void Boss1::TakeDamage(float damage)
+void FinalBoss::TakeDamage(float damage)
 {
     // Don't want to die twice :o
     if (GetHealth() <= 0.0f) return;
@@ -203,13 +200,17 @@ void Boss1::TakeDamage(float damage)
     m_health -= damage;
     if (m_health <= 0.f)
     {
-        m_sprite.SetFPS(2);
+        m_sprite.SetFPS(10);
         m_sprite.PlayAnimation("die", 1, true);
+        // TODO: Death animation
+        // m_sprite.PlayAnimation("die", 1, true);
         // Despawn the rings
         for (Ring& ring : m_rings)
         {
             delete ring.m_attack;
         }
         m_rings.clear();
+        // Game is won!
+        Progression::SetGameWon();
     }
 }

@@ -21,6 +21,8 @@ private:
     float m_y;
     // How zoomed in/out the user is with the camera
     float m_scale;
+
+    bool m_initialized;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////

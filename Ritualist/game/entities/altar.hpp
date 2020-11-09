@@ -12,7 +12,7 @@ private:
     Oasis::AnimatedSprite m_sprite;
 
     float m_activateTimer;
-    const float m_activateTime = 3.f;
+    const float m_activateTime = 2.f;
     bool m_activated;
     const float m_activateRadius = 240.f;
 };

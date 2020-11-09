@@ -1,3 +1,6 @@
 target_sources(Ritualist PRIVATE config.cpp)
 
 add_subdirectory(game)
+add_subdirectory(death)
+add_subdirectory(credits)
+add_subdirectory(opening)

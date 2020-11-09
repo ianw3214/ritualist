@@ -5,10 +5,10 @@
 
 #include "../entity.hpp"
 
-class Boss1 : public Entity
+class FinalBoss : public Entity
 {
 public:
-    Boss1();
+    FinalBoss();
 
     inline float GetX() const { return m_x; }
     inline float GetY() const { return m_y; }
@@ -42,11 +42,11 @@ private:
     float m_attackTimer;
     float m_ringTimer;
     bool m_charging;
-    const float m_attackTime = 8.f;
+    const float m_attackTime = 7.5f;
     const float m_attackChargeTime = 1.5f;
-    const float m_ringTime = 5.f;
+    const float m_ringTime = 5.5f;
     const float m_ringAngleSpeed = 2.5f;
-    const unsigned int m_ringsPerAttack = 4;
+    const unsigned int m_ringsPerAttack = 6;
     const float m_ringDamage = 2.f;
     std::vector<Ring> m_rings;
 

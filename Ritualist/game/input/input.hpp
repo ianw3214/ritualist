@@ -10,6 +10,7 @@ public:
     static bool MoveUp();
 
     static bool Attack();
+    static bool Teleport();
 private:
     friend class Input;
     static Ref<Input> s_input;
@@ -32,4 +33,5 @@ public:
     bool m_up;
 
     bool m_attack;
+    bool m_teleport;
 };

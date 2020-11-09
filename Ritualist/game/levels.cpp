@@ -6,7 +6,9 @@
 #include "entities/player.hpp"
 #include "entities/altar.hpp"
 #include "entities/portal.hpp"
+#include "entities/bossportal.hpp"
 #include "entities/enemies/boss1.hpp"
+#include "entities/enemies/finalboss.hpp"
 
 void LevelLoader::LoadLevel(Level level, Ref<GameLayer> layer)
 {
@@ -19,6 +21,11 @@ void LevelLoader::LoadLevel(Level level, Ref<GameLayer> layer)
     {
         LoadLevelBoss1(layer);
     }
+
+    if (level == Level::FINALBOSS)
+    {
+        LoadLevelFinalBoss(layer);
+    }
 }
 
 
@@ -29,9 +36,13 @@ void LevelLoader::LoadLevelLobby(Ref<GameLayer> layer)
     Player * player = new Player(600.f, 1200.f - 470.f);
     layer->m_entities.push_back(player);
 
-    Portal * portal = new Portal(300.f, 850.f);
+    Portal * portal = new Portal(200.f, 750.f);
     portal->SetLayer(-1);
     layer->m_entities.push_back(portal);
+
+    BigPortal * bigportal = new BigPortal(500.f, 820.f);
+    bigportal->SetLayer(-1);
+    layer->m_entities.push_back(bigportal);
 }
 
 void LevelLoader::LoadLevelBoss1(Ref<GameLayer> layer)
@@ -44,5 +55,15 @@ void LevelLoader::LoadLevelBoss1(Ref<GameLayer> layer)
     layer->m_entities.push_back(boss);
     Altar * altar = new Altar();
     layer->m_entities.push_back(altar);
+    layer->m_boss = boss;
+}
+
+void LevelLoader::LoadLevelFinalBoss(Ref<GameLayer> layer)
+{
+    layer->m_map = new Map("res/maps/finalboss_background.png", "res/finalboss.bmp");
+    Player * player = new Player(1000.f, 300.f);
+    layer->m_entities.push_back(player);
+    FinalBoss * boss = new FinalBoss();
+    layer->m_entities.push_back(boss);
     layer->m_boss = boss;
 }

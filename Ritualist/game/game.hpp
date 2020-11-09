@@ -32,6 +32,7 @@ public:
 
     static void ChangeLevel(Level level);
     static Level GetLevel();
+    static bool PlayerDead();
 
     // Buttons
     static void ResetButtons();
@@ -73,7 +74,14 @@ private:
 
     Map * m_map;
 
+    bool m_transitionChangeLevel;
+    float m_transitionTimer;
+    const float m_transitionTime = 1.5f;
+    const float m_winTransitionTime = 5.f;
     bool m_changeLevel;
+
+    float m_fadeInTimer;
+    const float m_fadeInTime = 3.7f;
 };
 
 #include "game/camera/camera.hpp"

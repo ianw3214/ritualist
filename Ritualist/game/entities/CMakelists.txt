@@ -1,10 +1,12 @@
 target_sources(Ritualist PRIVATE entity.hpp
     player.hpp
     altar.hpp
-    portal.hpp)
+    portal.hpp
+    bossportal.hpp)
 
 target_sources(Ritualist PRIVATE player.cpp
     altar.cpp
-    portal.cpp)
+    portal.cpp
+    bossportal.cpp)
 
 add_subdirectory(enemies)

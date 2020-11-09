@@ -1,31 +1,39 @@
-#include "portal.hpp"
+#include "bossportal.hpp"
 
 #include "game/game.hpp"
+#include "game/progression.hpp"
 #include "game/camera/camera.hpp"
 #include "game/input/input.hpp"
 
 #include "game/entities/player.hpp"
 
-#include "game/progression.hpp"
-
-Portal::Portal(float x, float y)
+BigPortal::BigPortal(float x, float y)
     : Entity(x, y, 180.f, 80.f, 0.f, 0.f)
-    , m_sprite("res/portal.png", 180.f, 80.f)
+    , m_sprite("res/portal_large.png", 270.f, 120.f)
 {
-    m_sprite.SetDimensions(180.f, 80.f);
+    m_sprite.SetDimensions(270.f, 120.f);
     m_sprite.AddAnimation("default", 0, 1);
     m_sprite.AddAnimation("hover", 2, 3);
     m_sprite.AddAnimation("closed", 4, 5);
     m_sprite.PlayAnimation("default");
 }
 
-void Portal::Update(float delta)
+void BigPortal::Update(float delta)
 {
-    if (Progression::CheckLevelFinished(Level::BOSS1))
+    // Check that all levels are already completed
+    bool available = true;
+    for (int i = 0; i < static_cast<int>(Level::COUNT); ++i)
     {
-        m_sprite.PlayAnimation("closed");
+        Level level = static_cast<Level>(i);
+        if (level == Level::LOBBY) continue;
+        if (level == Level::FINALBOSS) continue;
+        if (!Progression::CheckLevelFinished(level))
+        {
+            available = false;
+            break;
+        }
     }
-    else
+    if (available)
     {
         // Check player proximity with altar
         Ref<Player> player = GameService::GetPlayer();
@@ -35,7 +43,7 @@ void Portal::Update(float delta)
         {
             if (InputService::Attack())
             {
-                GameService::ChangeLevel(Level::BOSS1);   
+                GameService::ChangeLevel(Level::FINALBOSS);
             }
             m_sprite.PlayAnimation("hover");
         }
@@ -43,6 +51,10 @@ void Portal::Update(float delta)
         {
             m_sprite.PlayAnimation("default");
         }
+    }
+    else
+    {
+        m_sprite.PlayAnimation("closed");
     }
 
     m_sprite.SetPos(CameraService::RawToScreenX(m_x), CameraService::RawToScreenY(m_y));

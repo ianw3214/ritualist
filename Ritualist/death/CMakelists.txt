@@ -1,0 +1,1 @@
+target_sources(Ritualist PRIVATE death.hpp death.cpp)

@@ -1,7 +1,7 @@
 # target_sources(Ritualist PRIVATE config.cpp)
 
-target_sources(Ritualist PRIVATE game.hpp attackManager.hpp map.hpp levels.hpp)
-target_sources(Ritualist PRIVATE game.cpp attackManager.cpp map.cpp levels.cpp)
+target_sources(Ritualist PRIVATE game.hpp attackManager.hpp map.hpp levels.hpp progression.hpp)
+target_sources(Ritualist PRIVATE game.cpp attackManager.cpp map.cpp levels.cpp progression.cpp)
 
 add_subdirectory(entities)
 add_subdirectory(camera)

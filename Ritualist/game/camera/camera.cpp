@@ -3,6 +3,8 @@
 #include "game/game.hpp"
 #include "game/entities/player.hpp"
 
+constexpr float kCameraSpeed = 500.f;
+
 Ref<Camera> CameraService::s_camera;
 
 float CameraService::ScreenToRawX(int x)
@@ -36,6 +38,7 @@ Camera::Camera()
     : m_x(0.f)
     , m_y(0.f)
     , m_scale(1.f)
+    , m_initialized(false)
 {
     
 }
@@ -58,7 +61,36 @@ bool Camera::HandleEvent(const Oasis::Event& event)
 Oasis::IState * Camera::Update() 
 {
     Ref<Player> player = GameService::GetPlayer();
-    m_x = player->GetX();
-    m_y = player->GetY();
+    if (!m_initialized)
+    {
+        m_x = player->GetX();
+        m_y = player->GetY();
+        m_initialized = true;
+    }
+    else
+    {
+        // Microseconds to seconds
+        float delta = Oasis::WindowService::GetDeltaF() / 1000000.f;
+        if (m_x < player->GetX())
+        {
+            m_x += kCameraSpeed * delta;
+            if (m_x > player->GetX()) m_x = player->GetX();
+        }
+        if (m_x > player->GetX())
+        {
+            m_x -= kCameraSpeed * delta;
+            if (m_x < player->GetX()) m_x = player->GetX();
+        }
+        if (m_y < player->GetY())
+        {
+            m_y += kCameraSpeed * delta;
+            if (m_y > player->GetY()) m_y = player->GetY();
+        }
+        if (m_y > player->GetY())
+        {
+            m_y -= kCameraSpeed * delta;
+            if (m_y < player->GetY()) m_y = player->GetY();
+        }
+    }
     return nullptr;
 }

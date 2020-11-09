@@ -1,6 +1,7 @@
 #include "altar.hpp"
 
 #include "game/game.hpp"
+#include "game/progression.hpp"
 #include "player.hpp"
 
 Altar::Altar()
@@ -10,7 +11,7 @@ Altar::Altar()
 {
     m_sprite.SetDimensions(160.f, 480.f);
     m_sprite.AddAnimation("default", 0, 6);
-    m_sprite.AddAnimation("activated", 7, 7);
+    m_sprite.AddAnimation("activated", 7, 8);
     m_sprite.PlayAnimation("default");
     m_sprite.SetFPS(12);
 }
@@ -34,7 +35,13 @@ void Altar::Update(float delta)
     {
         if (GameService::SacrificeButton())
         {
+            UIManager::HideWindow(kAltarUiName);
             GameService::ChangeLevel(Level::LOBBY);
+            // Save the player health here in progression
+            Ref<Player> player = GameService::GetPlayer();
+            Progression::SetPlayerHealth(player->GetHealth());
+            // Close the altar since we already beat the level
+            Progression::SetLevelFinished(Level::BOSS1);
         }
     }
 
@@ -46,6 +53,7 @@ void Altar::Update(float delta)
         m_sprite.PlayAnimation("activated");
         m_activated = true;
         m_activateTimer = m_activateTime;
+        m_sprite.SetFPS(2);
     }
 
     m_sprite.SetPos(CameraService::RawToScreenX(m_x), CameraService::RawToScreenY(m_y));

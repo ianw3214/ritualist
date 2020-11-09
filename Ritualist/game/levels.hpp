@@ -3,8 +3,10 @@
 
 enum class Level
 {
-    LOBBY,
-    BOSS1
+    LOBBY = 0,
+    BOSS1,
+    FINALBOSS,
+    COUNT
 };
 
 class GameLayer;
@@ -15,4 +17,5 @@ public:
 private:
     static void LoadLevelLobby(Ref<GameLayer> layer);
     static void LoadLevelBoss1(Ref<GameLayer> layer);
+    static void LoadLevelFinalBoss(Ref<GameLayer> layer);
 };
