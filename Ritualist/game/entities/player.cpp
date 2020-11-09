@@ -386,5 +386,11 @@ void Player::TakeDamage(float damage)
         m_sprite.SetFPS(3);
         m_sprite.PlayAnimation("death_transition");
         m_sprite.QueueAnimation("dead");
+        CameraService::ScreenShake(1.5f, 12.f);
+    }
+    else
+    {
+        // Screenshake when taking damage
+        CameraService::ScreenShake(0.3f, 10.f);
     }
 }

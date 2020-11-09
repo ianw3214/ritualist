@@ -1,7 +1,7 @@
 #pragma once
 #include "oasis.h"
 
-constexpr float kCreditsSceneTimer = 2.f;
+constexpr float kCreditsSceneTimer = 1.f;
 
 class Opening : public Oasis::IState
 {
@@ -22,7 +22,7 @@ private:
     // transition timers
     bool m_buttonPressed;
     float m_fadeInTimer;
-    const float m_fadeInTime = 5.f;
+    const float m_fadeInTime = 4.f;
     float m_fadeOutTimer;
     const float m_fadeOutTime = 1.5f;
 };

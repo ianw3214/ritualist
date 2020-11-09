@@ -211,5 +211,10 @@ void Boss1::TakeDamage(float damage)
             delete ring.m_attack;
         }
         m_rings.clear();
+        CameraService::ScreenShake(2.f, 10.f);
+    }
+    else
+    {
+        CameraService::ScreenShake(0.15f, 4.f);
     }
 }

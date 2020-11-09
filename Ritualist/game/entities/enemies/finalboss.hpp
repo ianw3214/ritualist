@@ -16,6 +16,7 @@ public:
     virtual void Update(float delta) override;
 private:
     Oasis::AnimatedSprite m_sprite;
+    Oasis::AnimatedSprite m_attack2Sprite;
 
     const float m_speed = 400.f;
 
@@ -42,12 +43,15 @@ private:
     float m_attackTimer;
     float m_ringTimer;
     bool m_charging;
+    int m_attack;
     const float m_attackTime = 7.5f;
+    const float m_attack2Time = 2.5f;
     const float m_attackChargeTime = 1.5f;
+    const float m_attack2ChargeTime = 1.f;
     const float m_ringTime = 5.5f;
     const float m_ringAngleSpeed = 2.5f;
     const unsigned int m_ringsPerAttack = 6;
-    const float m_ringDamage = 2.f;
+    const float m_ringDamage = 2.5f;
     std::vector<Ring> m_rings;
 
     float m_invulnTimer;
